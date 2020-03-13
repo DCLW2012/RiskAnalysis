@@ -39,7 +39,7 @@ bool FileReader::ReadDatabase(QString fileName)
 	
 	//! 初始化一个database对象，更新各个字段最大值最小值
 	m_database = new Database();
-	FieldMap fieldMap = m_database->GetFields();
+	FieldMap& fieldMap = m_database->GetFields();
 
 	bool status = true;
 	long count = 0;  
@@ -57,8 +57,6 @@ bool FileReader::ReadDatabase(QString fileName)
 				count++;
 				continue;
 			}
-
-			//! 记录当前最大最小值
 
 			//! 遍历每个列的值，更新各个字段的最大最小值即可
 			//! 跳过ID，第一列
@@ -102,6 +100,101 @@ bool FileReader::ReadDatabase(QString fileName)
 bool FileReader::ReadDatabaseParam(QString fileName)
 {
 	//! 更新database属性字段中的计算方法以及成员变量中的阈值
+	QFile tempFile(fileName);
+	if(!tempFile.open(QIODevice::ReadOnly | QIODevice::Text))
+		return false;
+
+	QTextStream stream(&tempFile);
+	//! 读取一行数据,分割数据
+	QString line = stream.readLine().toUpper();
+	while(!stream.atEnd())
+	{
+		//判断文件头标识符
+		if(line.startsWith("PARAMS_METHOD"))
+		{
+			QStringList paramsheaders =  line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+			if(paramsheaders.size() < 2)
+			{
+				continue;
+			}
+
+			//！ 判断需要读取下边的行数
+			int validRow = paramsheaders[1].toInt();
+			line = stream.readLine().toUpper();
+			QStringList fieldNames = line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+			line = stream.readLine().toUpper();
+			QStringList methodList = line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+
+			if(fieldNames.size() > methodList.size())
+			{
+				continue;
+			}
+
+			//! 更新到数据库变量中
+			for(int i = 0; i < fieldNames.size(); ++i)
+			{
+				m_database->GetFields()[fieldNames[i]].sMethod = methodList[i].toInt();
+			}
+		}
+		else if (line.startsWith("PARAMS_THRESHOLD")) //连接关系
+		{
+			QStringList paramsheaders =  line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+			if(paramsheaders.size() < 2)
+			{
+				continue;
+			}
+
+			//！ 判断需要读取下边的行数
+			int validRow = paramsheaders[1].toInt();
+			for(int i = 0; i < validRow; ++ i)
+			{
+				line = stream.readLine().toUpper();
+				QStringList list = line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+
+				if("AQXS_THRESHOLD" == list[0].toUpper().trimmed())
+				{
+					m_database->SetAQXSthreshold(list[1].toFloat());
+				}
+
+				if("FX_THRESHOLD" == list[0].toUpper().trimmed())
+				{
+					m_database->SetFXthreshold(list[1].toFloat());
+				}
+			}
+		}
+		else if (line.startsWith("PARAMS_LNG")) //字段对应的文本描述
+		{
+			QStringList paramsheaders =  line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+			if(paramsheaders.size() < 2)
+			{
+				continue;
+			}
+
+			//！ 判断需要读取下边的行数
+			int validRow = paramsheaders[1].toInt();
+			line = stream.readLine().toUpper();
+			QStringList fieldNames = line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+			line = stream.readLine().toUpper();
+			QStringList desList = line.split(QRegExp(",|\\s+"), QString::SkipEmptyParts);
+
+			if(fieldNames.size() > desList.size())
+			{
+				continue;
+			}
+
+			//! 更新到数据库变量中
+			for(int i = 0; i < fieldNames.size(); ++i)
+			{
+				m_database->GetFields()[fieldNames[i]].sLngDes = desList[i];
+			}
+		}
+		else
+		{
+			line = stream.readLine().toUpper();
+		}
+	}
+
+	tempFile.close();
 
 	return true;
 }
@@ -142,8 +235,18 @@ bool FileReader::ReadInputForOut(QString fileName, QString outfileName)
 	int headerNum = headers.size();
 
 	//! 输出表头
-	QString outheaderLine = QString("%1,%2,%3").arg(headerLine).arg("OUT_FX").arg("OUT_LEVEL");
-	outstream << headerLine << "\n";
+	//! 输出的表头，采用指定的lng
+	QString lngDesLine;
+	lngDesLine.append("ID");
+	lngDesLine.append(","); //添加分隔符
+	for(int i = 1; i < headers.size(); ++i)
+	{
+		lngDesLine.append(m_database->GetFields()[headers[i]].sLngDes);
+		lngDesLine.append(","); //添加分隔符
+	}
+	
+	QString outheaderLine = QString("%1%2,%3").arg(lngDesLine).arg(m_database->GetFields()["OUT_FX"].sLngDes).arg(m_database->GetFields()["OUT_LEVEL"].sLngDes);
+	outstream << outheaderLine << "\n";
 
 	bool status = true;
 	long count = 0;  
