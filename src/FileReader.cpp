@@ -14,16 +14,16 @@ FileReader::~FileReader()
 bool FileReader::ReadDatabase(QString fileName)
 {
 
-	return false;
+	return true;
 }
 
 
 bool FileReader::ReadDatabaseParam(QString fileName)
 {
-	return false;
+	return true;
 }
 
 bool FileReader::ReadInput(QString fileName)
 {
-	return false;
+	return true;
 }
