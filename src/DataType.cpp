@@ -81,9 +81,9 @@ float Database::MethodTwo(float value, QString fieldName)
 //! 根据传入的一行值和表头，计算输出个累加风险值
 float Database::CalcFXvalue(QStringList headers, QStringList curLine)
 {
-	//! 跳过第一列ID
+	//! 跳过第一列ID,PD
 	float sum =0;
-	for(int i = 1; i  != headers.size(); ++i)
+	for(int i = 2; i  != headers.size()-1; ++i)
 	{
 		//! 判断方法值调用对应的函数
 		float value = 0;
