@@ -1,0 +1,27 @@
+# 指定运行此配置文件所需的CMake最低版本
+cmake_minimum_required(VERSION 3.0)
+
+# 项目名称
+project(RiskAnalysis)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# 为Qt目标自动处理moc。
+set(CMAKE_AUTOMOC ON)
+
+# 搜索Qt4相关库
+find_package(Qt4 REQUIRED)
+
+include(${QT_USE_FILE})
+
+# 在源文件编译中添加-D定义标志
+# add_definitions(-std=c++11)
+
+# 搜集所有在指定路径下的源文件的文件名，将输出结果列表储存在指定的变量中
+aux_source_directory(src/ DIR_SRCS)
+
+# 使用给定的源文件，为工程引入一个可执行文件
+add_executable(${PROJECT_NAME} ${DIR_SRCS})
+
+# 添加链接库,相同于指定-l参数
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
