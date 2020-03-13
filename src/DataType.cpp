@@ -53,7 +53,34 @@ float Database::CalcFXvalue(QStringList headers, QStringList curLine)
 //! 根据出入的风险值和安全系数值，计算输出个风险等级值
 int Database::ClacFXLEVELvalue(float fxValue, float aqxsValue)
 {
-	return 1;
+	//  |      0     |      1     
+	//  ----------------------------（fx轴→）
+	//  |      2     |      3
+	//(aqxs轴↑)
+	
+	float fxthreshold = this->GetFXthreshold();
+	float aqxsthreshold = this->GetAQXSthreshold();
+	if(fxValue <= fxthreshold && aqxsValue > aqxsthreshold)
+	{
+		return 0;
+	}
+
+	if(fxValue > fxthreshold && aqxsValue > aqxsthreshold)
+	{
+		return 1;
+	}
+
+	if(fxValue > fxthreshold && aqxsValue <= aqxsthreshold)
+	{
+		return 3;
+	}
+
+	if(fxValue <= fxthreshold && aqxsValue <= aqxsthreshold)
+	{
+		return 2;
+	}
+
+	return 0;
 }
 
 //*****************************************************************
