@@ -44,10 +44,64 @@ void Database::SetFXthreshold(float value)
 }
 
 
+float Database::MethodOne(float value, QString fieldName)
+{
+	float minValue = this->m_fields[fieldName].sMin;
+	float maxValue = this->m_fields[fieldName].sMax;
+
+	float range = maxValue - minValue;
+	float disFromMin = value - minValue;
+
+	if(range == 0)
+	{
+		return 0;
+	}
+
+	float result = 4 * disFromMin / range + 1;
+	return result;
+}
+
+float Database::MethodTwo(float value, QString fieldName)
+{
+	float minValue = this->m_fields[fieldName].sMin;
+	float maxValue = this->m_fields[fieldName].sMax;
+
+	float range = maxValue - minValue;
+	float disFromMax = maxValue - value;
+
+	if(range == 0)
+	{
+		return 0;
+	}
+
+	float result = 4 * disFromMax / range + 1;
+	return result;
+}
+
 //! 根据传入的一行值和表头，计算输出个累加风险值
 float Database::CalcFXvalue(QStringList headers, QStringList curLine)
 {
-	return 20;
+	//! 跳过第一列ID
+	float sum =0;
+	for(int i = 1; i  != headers.size(); ++i)
+	{
+		//! 判断方法值调用对应的函数
+		float value = 0;
+		if(this->m_fields[headers[i]].sMethod == 1)
+		{
+			value = this->MethodOne(curLine[i].toFloat(), headers[i]);
+			
+		}else if(this->m_fields[headers[i]].sMethod == 2)
+		{
+			value = this->MethodTwo(curLine[i].toFloat(), headers[i]);
+		}else
+		{
+			value = this->MethodOne(curLine[i].toFloat(), headers[i]);
+		}
+		sum += value;
+	}
+
+	return sum;
 }
 
 //! 根据出入的风险值和安全系数值，计算输出个风险等级值

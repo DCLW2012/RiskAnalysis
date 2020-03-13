@@ -41,6 +41,9 @@ public:
 
 	//! 根据出入的风险值和安全系数值，计算输出个风险等级值
 	int ClacFXLEVELvalue(float fxValue, float aqxsValue);
+
+	float MethodOne(float value, QString fieldName);
+	float MethodTwo(float value, QString fieldName);
 private:
 	FieldMap m_fields;
 
