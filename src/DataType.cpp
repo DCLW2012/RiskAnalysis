@@ -11,6 +11,15 @@ Database::~Database()
 
 }
 
+int Database::GetFieldNum()
+{
+	return m_fields.size();
+}
+
+FieldMap& Database::GetFields()
+{
+	return m_fields;
+}
 
 
 //*****************************************************************

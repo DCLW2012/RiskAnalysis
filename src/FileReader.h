@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QString>
 
+
+class Database;
 class FileReader : public QObject
 {
 	Q_OBJECT
@@ -21,7 +23,7 @@ public:
 	//! 3、读取输入文件并计算输出
 	bool ReadInput(QString fileName);
 private:
-	
+	Database* m_database;
 };
 
 #endif // FILEREADER_H
