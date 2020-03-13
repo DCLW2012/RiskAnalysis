@@ -21,7 +21,7 @@ public:
 	bool ReadDatabaseParam(QString fileName);
 
 	//! 3、读取输入文件并计算输出
-	bool ReadInput(QString fileName);
+	bool ReadInputForOut(QString fileName, QString outfileName);
 private:
 	Database* m_database;
 };

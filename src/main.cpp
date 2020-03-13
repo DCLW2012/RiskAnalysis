@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	//! º∆À„ ‰≥ˆ
 	if(isdbSuccess && isdbparamSuccess)
 	{
-		bool isSuccess = fReader.ReadInput(inputFullPath);
+		bool isSuccess = fReader.ReadInputForOut(inputFullPath, outputFullPath);
 
 		if(isSuccess)
 		{
