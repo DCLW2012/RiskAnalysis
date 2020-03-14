@@ -4,7 +4,7 @@
 
 ## 原始数据说明
 
-1、数据库样本库样例![1584099099636](.\screenshot\database.png)
+1、数据库样本库样例![1584099099636](screenshot/database.png)
 
 2、将数据库文件，输入的已知量，参数控制文件，整理成逗号分隔的标准文本格式，以供程序读取输出
 
@@ -12,27 +12,27 @@
 
 1、database.txt数据库
 
-![1584101180445](.\screenshot\databasetxt.png)
+![1584101180445](screenshot/databasetxt.png)
 
 2、input.txt输入数据，需要进行分析的已知数据
 
-![1584101293931](.\screenshot\input.png)
+![1584101293931](screenshot/input.png)
 
 3、database_param.txt数据库参数文件
 
-![1584102071686](.\screenshot\controlparams.png)
+![1584102071686](screenshot/controlparams.png)
 
 4、output.txt根据输入文件，计算后的输出文件，增加两列计算值
 
-![1584102176389](.\screenshot\output.png)
+![1584102176389](screenshot/output.png)
 
 **特别说明：**OUT_LEVEL是风险等级，等级编号规则，示意图如下：
 
-![1584102872229](.\screenshot\risknumber.png)
+![1584102872229](screenshot/risknumber.png)
 
 5、结果验证
 
-![1584126006335](screenshot\compare.png)
+![1584126006335](screenshot/compare.png)
 
 ## 使用注意事项
 
