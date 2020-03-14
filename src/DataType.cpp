@@ -83,7 +83,7 @@ float Database::CalcFXvalue(QStringList headers, QStringList curLine)
 {
 	//! 跳过第一列ID,PD
 	float sum =0;
-	for(int i = 2; i  != headers.size()-1; ++i)
+	for(int i = 1; i  != headers.size()-1; ++i)
 	{
 		//! 判断方法值调用对应的函数
 		float value = 0;
