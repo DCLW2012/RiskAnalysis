@@ -2,13 +2,22 @@
 #include <QtCore/QCoreApplication>
 #include <QDir>
 #include <QFile>
-
+#include "QTextCodec"
 
 #include "FileReader.h"
+#include "Logger.h"
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
+
+	//国际化
+	QTextCodec::setCodecForLocale(QTextCodec::codecForLocale());
+	QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
+
+	//!! 日志系统，存储到log目录下
+	//! 初始化创建log文件
+	Logger::CreateNewLogFile(QCoreApplication::applicationName());
 
 	//! 当前工作路径
 	QString curDirectory = QDir::toNativeSeparators(QCoreApplication::applicationDirPath());
@@ -25,8 +34,6 @@ int main(int argc, char *argv[])
 		file.remove();
     }
 
-	//!! 日志系统，存储到log目录下
-
 	//! 读取文件
 	FileReader fReader = new FileReader(nullptr);
 	bool isdbSuccess = fReader.ReadDatabase(databaseFullPath);
@@ -40,8 +47,12 @@ int main(int argc, char *argv[])
 		if(isSuccess)
 		{
 			a.quit();
+			Logger::Message(QString("计算成功！"));
 			return 0;
 		}
+		Logger::Message(QString("输入文件错误或者计算失败！"));
+	}else{
+		Logger::Message(QString("数据库文件或者参数文件解析不正确！"));
 	}
 	
 	return a.exec();
